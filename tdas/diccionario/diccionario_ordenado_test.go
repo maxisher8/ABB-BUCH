@@ -1,6 +1,7 @@
 package diccionario_test
 
 import (
+	"math/rand"
 	"strings"
 	TDADiccionario "tdas/diccionario"
 	"testing"
@@ -382,3 +383,64 @@ func TestABBIteradorRangoVacio(t *testing.T) {
 	require.PanicsWithValue(t, _MENSAJE_ITERADOR_TERMINADO, func() { iterador.VerActual() })
 	require.PanicsWithValue(t, _MENSAJE_ITERADOR_TERMINADO, func() { iterador.Avanzar() })
 }
+
+// Volumen
+
+func clavesDesordenadas(n int) []int {
+	return rand.New(rand.NewSource(42)).Perm(n)
+}
+
+func TestABBVolumenGuardarObtenerBorrar(t *testing.T) {
+	abb := TDADiccionario.CrearABB[int, int](compararEnteros)
+	claves := clavesDesordenadas(_VOLUMEN_ABB)
+
+	for _, clave := range claves {
+		abb.Guardar(clave, clave*2)
+	}
+	require.Equal(t, _VOLUMEN_ABB, abb.Cantidad())
+
+	for _, clave := range claves {
+		require.True(t, abb.Pertenece(clave))
+		require.Equal(t, clave*2, abb.Obtener(clave))
+	}
+
+	for _, clave := range claves {
+		require.Equal(t, clave*2, abb.Borrar(clave))
+		require.False(t, abb.Pertenece(clave))
+	}
+	require.Equal(t, 0, abb.Cantidad())
+}
+
+func TestABBVolumenIteradoresEnOrden(t *testing.T) {
+	abb := TDADiccionario.CrearABB[int, int](compararEnteros)
+	for _, clave := range clavesDesordenadas(_VOLUMEN_ABB) {
+		abb.Guardar(clave, clave)
+	}
+
+	esperada := 0
+	for iterador := abb.Iterador(); iterador.HayAlgoMas(); iterador.Avanzar() {
+		clave, dato := iterador.VerActual()
+		require.Equal(t, esperada, clave)
+		require.Equal(t, esperada, dato)
+		esperada++
+	}
+	require.Equal(t, _VOLUMEN_ABB, esperada)
+
+	esperada = 0
+	abb.Iterar(func(clave int, dato int) bool {
+		require.Equal(t, esperada, clave)
+		esperada++
+		return true
+	})
+	require.Equal(t, _VOLUMEN_ABB, esperada)
+
+	desde, hasta := _VOLUMEN_ABB/4, _VOLUMEN_ABB/2
+	esperada = desde
+	for iterador := abb.IteradorRango(&desde, &hasta); iterador.HayAlgoMas(); iterador.Avanzar() {
+		clave, _ := iterador.VerActual()
+		require.Equal(t, esperada, clave)
+		esperada++
+	}
+	require.Equal(t, hasta+1, esperada)
+}
+
