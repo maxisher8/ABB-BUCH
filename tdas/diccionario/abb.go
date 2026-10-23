@@ -131,8 +131,6 @@ func (abb *diccionarioOrdenado[K, V]) Obtener(clave K) V {
 	panic(_PANIC_CLAVE_NO_PERTENECE_DICCIONARIO)
 }
 
-
-
 ////////////////////////////////////////////////////////// ITERADORES //////////////////////////////////////////////////////////
 
 func (abb *diccionarioOrdenado[K, V]) Iterar(visitar func(K, V) bool) {
@@ -194,7 +192,7 @@ func (iter *iteradorExternoABB[K, V]) Avanzar() {
 
 /////////////////////////////// RANGOSSSS
 
-//INTERNO
+// INTERNO
 func (abb *diccionarioOrdenado[K, V]) IterarRango(desde *K, hasta *K, visitar func(K, V) bool) {
 	if abb == nil {
 		panic(_PANIC_DICCIONARIO_VACIO)

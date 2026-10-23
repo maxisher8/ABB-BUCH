@@ -1,2 +1,0 @@
-package diccionario_test
-
