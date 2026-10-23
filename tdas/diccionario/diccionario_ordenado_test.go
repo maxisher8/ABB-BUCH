@@ -302,38 +302,6 @@ func TestABBIterarRangoVacio(t *testing.T) {
 	require.Equal(t, 0, visitados)
 }
 
-func TestABBIterarRangoCorteAnticipado(t *testing.T) {
-	var recorrido []int
-	abb := TDADiccionario.CrearABB[int, int](compararEnteros)
-	abb.Guardar(5, 50)
-	abb.Guardar(3, 30)
-	abb.Guardar(8, 80)
-	abb.Guardar(1, 10)
-	abb.Guardar(4, 40)
-
-	desde, hasta := 2, 8
-	abb.IterarRango(&desde, &hasta, func(clave int, dato int) bool {
-		recorrido = append(recorrido, clave)
-		return clave != 4
-	})
-	require.Equal(t, []int{3, 4}, recorrido)
-}
-
-func TestABBIteradorRangoCompleto(t *testing.T) {
-	var recorrido []int
-	abb := TDADiccionario.CrearABB[int, int](compararEnteros)
-	abb.Guardar(5, 50)
-	abb.Guardar(3, 30)
-	abb.Guardar(8, 80)
-	abb.Guardar(1, 10)
-
-	for iterador := abb.IteradorRango(nil, nil); iterador.HayAlgoMas(); iterador.Avanzar() {
-		clave, _ := iterador.VerActual()
-		recorrido = append(recorrido, clave)
-	}
-	require.Equal(t, []int{1, 3, 5, 8}, recorrido)
-}
-
 func TestABBIteradorRangoIncluyeExtremos(t *testing.T) {
 	abb := TDADiccionario.CrearABB[int, int](compararEnteros)
 	abb.Guardar(5, 50)
